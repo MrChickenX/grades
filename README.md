@@ -34,4 +34,7 @@ To avoid accidental data loss you should back up your data regularly. Two common
   - Check Developer Tools → Application/Storage → Local Storage for known keys.
   - If you have a backup file, try importing it.
 
+## Credits
+The sidebar design is based on a template from Coding2Go: https://www.coding2go.com
+
 ---
