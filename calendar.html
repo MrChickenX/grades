@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalender</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+  :root {
+    --base-clr: #11121a;
+    --line-clr: #42434a;
+    --hover-clr: #222533;
+    --text-clr: #e6e6ef;
+    --accent-clr: #5e63ff;
+    --secondary-text-clr: #b0b3c1;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.5rem;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: var(--base-clr);
+    color: var(--text-clr);
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+
+  #sidebar {
+    box-sizing: border-box;
+    height: 100vh;
+    width: 250px;
+    padding: 5px 1em;
+    background-color: var(--base-clr);
+    border-right: 1px solid var(--line-clr);
+
+    position: sticky;
+    top: 0;
+    align-self: start;
+    transition: 300ms ease-in-out;
+    overflow: hidden;
+    text-wrap: nowrap;
+  }
+
+  #sidebar.close {
+    padding: 5px;
+    width: 60px;
+  }
+
+  #sidebar ul {
+    list-style: none;
+  }
+
+  #sidebar>ul>li:first-child {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+
+    .logo {
+      font-weight: 600;
+    }
+  }
+
+  #sidebar ul li.active a {
+    color: var(--accent-clr);
+
+    svg {
+      fill: var(--accent-clr);
+    }
+  }
+
+  #sidebar a,
+  #sidebar .dropdown-btn,
+  #sidebar .logo {
+    border-radius: .5em;
+    padding: .85em;
+    text-decoration: none;
+    color: var(--text-clr);
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+
+  .dropdown-btn {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  #sidebar svg {
+    flex-shrink: 0;
+    fill: var(--text-clr);
+  }
+
+  #sidebar a span,
+  #sidebar .dropdown-btn span {
+    flex-grow: 1;
+  }
+
+  #sidebar a:hover,
+  #sidebar .dropdown-btn:hover {
+    background-color: var(--hover-clr);
+  }
+
+  #sidebar .sub-menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 300ms ease-in-out;
+
+    >div {
+      overflow: hidden;
+    }
+  }
+
+  #sidebar .sub-menu.show {
+    grid-template-rows: 1fr;
+  }
+
+  .dropdown-btn svg {
+    transition: 200ms ease;
+  }
+
+  .rotate svg:last-child {
+    rotate: 180deg;
+  }
+
+  #sidebar .sub-menu a {
+    padding-left: 2em;
+  }
+
+  #toggle-btn {
+    margin-left: auto;
+    padding: 1em;
+    border: none;
+    border-radius: .5em;
+    background: none;
+    cursor: pointer;
+
+    svg {
+      transition: rotate 150ms ease;
+    }
+  }
+
+  #toggle-btn:hover {
+    background-color: var(--hover-clr);
+  }
+
+  main {
+    padding: min(30px, 7%);
+  }
+
+  main p {
+    color: var(--secondary-text-clr);
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+
+  .container {
+    border: 1px solid var(--line-clr);
+    border-radius: 1em;
+    margin-bottom: 20px;
+    padding: min(3em, 15%);
+
+    h2,
+    p {
+      margin-top: 1em
+    }
+  }
+
+  @media(max-width: 800px) {
+    body {
+      grid-template-columns: 1fr;
+    }
+
+    main {
+      padding: 2em 1em 60px 1em;
+    }
+
+    .container {
+      border: none;
+      padding: 0;
+    }
+
+    #sidebar {
+      height: 60px;
+      width: 100%;
+      border-right: none;
+      border-top: 1px solid var(--line-clr);
+      padding: 0;
+      position: fixed;
+      top: unset;
+      bottom: 0;
+
+      >ul {
+        padding: 0;
+        display: grid;
+        grid-auto-columns: 60px;
+        grid-auto-flow: column;
+        align-items: center;
+        overflow-x: scroll;
+      }
+
+      ul li {
+        height: 100%;
+      }
+
+      ul a,
+      ul .dropdown-btn {
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        border-radius: 0;
+        justify-content: center;
+      }
+
+      ul li span,
+      ul li:first-child,
+      .dropdown-btn svg:last-child {
+        display: none;
+      }
+
+      ul li .sub-menu.show {
+        position: fixed;
+        bottom: 60px;
+        left: 0;
+        box-sizing: border-box;
+        height: 60px;
+        width: 100%;
+        background-color: var(--hover-clr);
+        border-top: 1px solid var(--line-clr);
+        display: flex;
+        justify-content: center;
+
+        >div {
+          overflow-x: auto;
+        }
+
+        li {
+          display: inline-flex;
+        }
+
+        a {
+          box-sizing: border-box;
+          padding: 1em;
+          width: auto;
+          justify-content: center;
+        }
+      }
+    }
+  }
+</style>
+
+<body>
+  <nav id="sidebar">
+    <ul>
+      <li>
+        <span class="logo">Menu</span>
+        <button onclick="toggleSidebar()" id="toggle-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Zm264 0 155 156q11 11 11.5 27.5T732-268q-11 11-28 11t-28-11L492-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T732-692q11 11 11 28t-11 28L577-480Z">
+            </path>
+          </svg>
+        </button>
+      </li>
+      <li>
+        <a href="index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560q-17 0-28.5-11.5T520-640ZM120-480v-320q0-17 11.5-28.5T160-840h240q17 0 28.5 11.5T440-800v320q0 17-11.5 28.5T400-440H160q-17 0-28.5-11.5T120-480Zm400 320v-320q0-17 11.5-28.5T560-520h240q17 0 28.5 11.5T840-480v320q0 17-11.5 28.5T800-120H560q-17 0-28.5-11.5T520-160Zm-400 0v-160q0-17 11.5-28.5T160-360h240q17 0 28.5 11.5T440-320v160q0 17-11.5 28.5T400-120H160q-17 0-28.5-11.5T120-160Zm80-360h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z">
+            </path>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <button onclick="toggleSubMenu(this)" class="dropdown-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+            <path
+              d="M160-200h160v-320H160v320Zm240 0h160v-560H400v560Zm240 0h160v-240H640v240ZM80-120v-480h240v-240h320v320h240v400H80Z" />
+          </svg>
+          <span>Stats</span>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z">
+            </path>
+          </svg>
+        </button>
+        <ul class="sub-menu">
+          <div>
+            <li><a href="stats.html" data-view-link="dashboard">Dashboard</a></li>
+            <li><a href="stats.html" data-view-link="exams">Prüfungen</a></li>
+            <li><a href="stats.html" data-view-link="data">Daten</a></li>
+          </div>
+        </ul>
+      </li>
+      <li class="active">
+        <a href="calendar.html">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+            <path
+              d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+          </svg>
+          <span>Kalender</span>
+        </a>
+      </li>
+      <li>
+        <a href="settings.html">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+            <path
+              d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+          </svg>
+          <span>Einstellungen</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <main class="content">
+    <div style="max-width:1200px;margin:18px auto;">
+      <div class="stats-inner">
+        <header>
+          <h1>Kalender</h1>
+        </header>
+
+        <div class="cal-header">
+          <div class="cal-controls">
+            <button id="prevMonth" class="btn">◀</button>
+            <button id="nextMonth" class="btn">▶</button>
+            <button id="todayBtn" class="btn">Heute</button>
+          </div>
+          <div id="currentMonth" style="font-weight:900;font-size:16px"></div>
+          <div class="cal-controls">
+            <button data-view="month" class="btn active">Monat</button>
+            <button data-view="year" class="btn">Jahr</button>
+          </div>
+        </div>
+
+        <div class="calendar-wrap">
+          <div class="cal-left">
+            <div class="cal-weekdays">
+              <div>Mo</div>
+              <div>Di</div>
+              <div>Mi</div>
+              <div>Do</div>
+              <div>Fr</div>
+              <div>Sa</div>
+              <div>So</div>
+            </div>
+
+            <div id="calGrid" class="cal-grid" aria-live="polite" role="grid"></div>
+
+            <div id="yearView">
+              <div class="year-grid" id="yearGrid"></div>
+            </div>
+          </div>
+
+          <aside class="cal-right">
+            <div class="card" style="margin-top:12px">
+              <div class="muted">Termine diese Woche</div>
+              <div id="weekList" style="margin-top:8px; max-height:320px; overflow:auto"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="examModal" class="modal" style="display:none" role="dialog" aria-modal="true">
+    <button class="close" id="closeModal">✖</button>
+    <h3 id="modalTitle">Prüfung</h3>
+    <div class="meta" id="modalMeta">Fach • Datum</div>
+    <div id="modalDesc" style="margin-bottom:8px"></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div>Note: <strong id="modalGrade">-</strong></div>
+      <div>Max: <strong id="modalMax">-</strong></div>
+      <div>Erreicht: <strong id="modalAch">-</strong></div>
+    </div>
+  </div>
+
+</body>
+<script>
+  const toggleButton = document.getElementById('toggle-btn')
+  const sidebar = document.getElementById('sidebar')
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('close')
+    toggleButton.classList.toggle('rotate')
+
+    closeAllSubMenus()
+  }
+
+  function toggleSubMenu(button) {
+
+    if (!button.nextElementSibling.classList.contains('show')) {
+      closeAllSubMenus()
+    }
+
+    button.nextElementSibling.classList.toggle('show')
+    button.classList.toggle('rotate')
+
+    if (sidebar.classList.contains('close')) {
+      sidebar.classList.toggle('close')
+      toggleButton.classList.toggle('rotate')
+    }
+  }
+
+  function closeAllSubMenus() {
+    Array.from(sidebar.getElementsByClassName('show')).forEach(ul => {
+      ul.classList.remove('show')
+      ul.previousElementSibling.classList.remove('rotate')
+    })
+  }
+
+  /* Main function */
+
+  (function () {
+    const KEY = 'subjects_v3';
+    const calGrid = document.getElementById('calGrid');
+    const yearGrid = document.getElementById('yearGrid');
+    const yearView = document.getElementById('yearView');
+    const currentMonthEl = document.getElementById('currentMonth');
+    const prevBtn = document.getElementById('prevMonth');
+    const nextBtn = document.getElementById('nextMonth');
+    const todayBtn = document.getElementById('todayBtn');
+    const weekList = document.getElementById('weekList');
+    const viewBtns = document.querySelectorAll('.btn[data-view]');
+
+    let dt = new Date(); // displayed month/year
+    let currentView = 'month'; // 'month' | 'year'
+
+    /* ------------------ Storage helpers ------------------ */
+    function load() { try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : []; } catch (e) { console.error(e); return []; } }
+    function save(subjects) { try { localStorage.setItem(KEY, JSON.stringify(subjects)); } catch (e) { console.error('save failed', e); } }
+
+    /* ------------------ Date helpers ------------------ */
+    function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+    function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
+    function formatYMD(d) { const y = d.getFullYear(); const m = String(d.getMonth() + 1).padStart(2, '0'); const day = String(d.getDate()).padStart(2, '0'); return `${y}-${m}-${day}`; }
+
+    /* ------------------ UI helpers ------------------ */
+    // calculate grid height so it doesn't jump when items change
+    function adjustGridHeight() {
+      const container = document.querySelector('.stats-inner');
+      const header = document.querySelector('.cal-header');
+      const weekdays = document.querySelector('.cal-weekdays');
+
+      const topOffset = container ? container.getBoundingClientRect().top : 80;
+      const headerH = header ? header.offsetHeight : 60;
+      const weekdaysH = weekdays ? weekdays.offsetHeight : 28;
+      const available = Math.max(420, Math.floor(window.innerHeight - topOffset - headerH - weekdaysH - 120));
+      if (calGrid) calGrid.style.height = available + 'px';
+    }
+
+    function buildExamsByDate(subjects) {
+      const map = {};
+      subjects.forEach(s => {
+        (s.exams || []).forEach(ex => {
+          if (ex.date) {
+            const key = ex.date;
+            if (!map[key]) map[key] = [];
+            map[key].push(Object.assign({}, ex, { subjectId: s.id, subjectName: s.name }));
+          }
+        });
+      });
+      return map;
+    }
+
+    function setActiveViewButtons(view) {
+      document.querySelectorAll('.btn[data-view]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.btn[data-view]').forEach(btn => { if (btn.dataset.view === view) btn.classList.add('active'); });
+    }
+
+    /* ------------------ Render (Month) ------------------ */
+    function render() {
+      const subjects = load();
+      if (currentView === 'year') { renderYear(subjects); return; }
+
+      // month view
+      if (yearView) yearView.style.display = 'none';
+      if (calGrid) calGrid.style.display = 'grid';
+      const monthStart = startOfMonth(dt); const startDay = new Date(monthStart);
+      const shift = (startDay.getDay() + 6) % 7; startDay.setDate(startDay.getDate() - shift);
+
+      if (currentMonthEl) currentMonthEl.textContent = monthStart.toLocaleString('de-CH', { month: 'long', year: 'numeric' });
+      if (calGrid) calGrid.innerHTML = '';
+
+      const cells = []; for (let i = 0; i < 42; i++) { const day = new Date(startDay); day.setDate(startDay.getDate() + i); cells.push(day); }
+      const examsByDate = buildExamsByDate(subjects);
+
+      const todayKey = formatYMD(new Date());
+
+      cells.forEach(day => {
+        const key = formatYMD(day);
+        const el = document.createElement('div'); el.className = 'day'; el.setAttribute('data-date', key);
+        if (day.getMonth() !== dt.getMonth()) el.classList.add('other-month');
+        if (key === todayKey) el.classList.add('today');
+
+        const num = document.createElement('div'); num.className = 'date-num'; num.textContent = day.getDate(); el.appendChild(num);
+
+        const list = document.createElement('div'); list.className = 'exam-list';
+
+        const exams = examsByDate[key] || [];
+        exams.forEach(ex => {
+          const pill = document.createElement('div'); pill.className = 'exam-pill'; pill.draggable = true;
+          pill.dataset.examId = ex.id || '';
+          pill.dataset.subjectId = ex.subjectId || '';
+          if (ex.grade && parseFloat(ex.grade) < 4.0) pill.classList.add('low');
+
+          const left = document.createElement('div'); left.className = 'left';
+          const dot = document.createElement('span'); dot.className = 'subject-dot'; dot.textContent = ex.subjectName ? ex.subjectName.slice(0, 1) : '📘';
+          const name = document.createElement('span'); name.className = 'name'; name.textContent = `${ex.subjectName}: ${ex.name}`;
+          left.appendChild(dot); left.appendChild(name);
+
+          const badge = document.createElement('span');
+
+          pill.appendChild(left); pill.appendChild(badge);
+
+          pill.addEventListener('click', () => openModal(ex));
+          pill.addEventListener('dragstart', (ev) => { try { ev.dataTransfer.setData('text/plain', JSON.stringify({ subjectId: ex.subjectId, examId: ex.id })); } catch (e) { } pill.classList.add('dragging'); });
+          pill.addEventListener('dragend', () => { pill.classList.remove('dragging'); render(); });
+
+          list.appendChild(pill);
+        });
+
+        if (exams.length > 6) {
+          const more = document.createElement('div'); more.className = 'small'; more.textContent = `+${exams.length - 6} weitere`; list.appendChild(more);
+        }
+
+        el.appendChild(list);
+
+        // drop handling
+        el.addEventListener('dragover', ev => { ev.preventDefault(); el.classList.add('drop-target'); });
+        el.addEventListener('dragleave', ev => { el.classList.remove('drop-target'); });
+        el.addEventListener('drop', ev => {
+          ev.preventDefault(); el.classList.remove('drop-target');
+          try {
+            const payload = JSON.parse(ev.dataTransfer.getData('text/plain'));
+            if (payload && payload.subjectId && payload.examId) { moveExamToDate(payload.subjectId, payload.examId, key); }
+          } catch (e) { console.error(e); }
+        });
+
+        // if calGrid not found, skip append
+        if (calGrid) calGrid.appendChild(el);
+      });
+
+      adjustGridHeight();
+      renderWeekList(subjects);
+    }
+
+    /* ------------------ Week list ------------------ */
+    function renderWeekList(subjects) {
+      if (!weekList) return;
+      weekList.innerHTML = ''; const now = new Date(); const start = new Date(now); start.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(start); d.setDate(start.getDate() + i); const key = formatYMD(d); const dayBlock = document.createElement('div'); dayBlock.style.marginBottom = '8px';
+        const dd = document.createElement('div'); dd.style.fontWeight = '800'; dd.textContent = d.toLocaleDateString('de-CH', { weekday: 'short', day: '2-digit', month: '2-digit' }); dayBlock.appendChild(dd);
+
+        const items = [];
+        subjects.forEach(s => { (s.exams || []).forEach(ex => { if (ex.date === key) { items.push(Object.assign({}, ex, { subjectName: s.name, subjectId: s.id })); } }); });
+
+        if (items.length === 0) { const none = document.createElement('div'); none.className = 'small'; none.textContent = 'Keine Prüfungen'; dayBlock.appendChild(none); }
+        else {
+          items.forEach(it => {
+            const d1 = document.createElement('div');
+            d1.innerHTML = `<span style="font-weight:700">${escapeHtml(it.name)}</span> <span class="small">• ${escapeHtml(it.subjectName)} • ${it.grade ? '<span class="note-pill ' + (parseFloat(it.grade) < 4 ? 'low' : '') + '">' + it.grade + '</span>' : '<em>(ohne Note)</em>'}</span>`;
+            d1.style.marginTop = '6px'; d1.style.cursor = 'pointer'; d1.addEventListener('click', () => openModal(it)); dayBlock.appendChild(d1);
+          });
+        }
+        weekList.appendChild(dayBlock);
+      }
+    }
+
+    /* ------------------ Move exam (drag & drop) ------------------ */
+    function moveExamToDate(subjectId, examId, newDate) {
+      const subjects = load();
+      const s = subjects.find(x => x.id === subjectId); if (!s) return;
+      const e = s.exams.find(x => x.id === examId); if (!e) return;
+      e.date = newDate;
+      save(subjects);
+      render();
+    }
+
+    /* ------------------ Modal ------------------ */
+    const modal = document.getElementById('examModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMeta = document.getElementById('modalMeta');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalGrade = document.getElementById('modalGrade');
+    const modalMax = document.getElementById('modalMax');
+    const modalAch = document.getElementById('modalAch');
+    const closeModalBtn = document.getElementById('closeModal');
+    if (closeModalBtn) closeModalBtn.addEventListener('click', () => { if (modal) modal.style.display = 'none'; });
+
+    function openModal(ex) {
+      if (!modal) return;
+      modalTitle.textContent = ex.name || 'Prüfung';
+      modalMeta.textContent = (ex.subjectName || '') + ' • ' + (ex.date || '-');
+      modalDesc.textContent = ex.desc || '';
+      modalGrade.textContent = ex.grade || '-';
+      modalMax.textContent = ex.maxPoints || '-';
+      modalAch.textContent = ex.achievedPoints || '-';
+      modal.style.display = 'block';
+    }
+
+    function escapeHtml(s) { return ('' + s).replace(/[&<>\"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+    /* ------------------ YEAR view: school year (Aug - Jul) ------------------ */
+    function renderYear(subjects) {
+      if (calGrid) calGrid.style.display = 'none';
+      if (yearView) yearView.style.display = 'block';
+      if (yearGrid) yearGrid.innerHTML = '';
+
+      // determine school year start (August)
+      const isAfterAug = dt.getMonth() >= 7; // Aug index 7
+      const startYear = isAfterAug ? dt.getFullYear() : dt.getFullYear() - 1;
+      if (currentMonthEl) currentMonthEl.textContent = `${startYear}/${String(startYear + 1).slice(-2)}`;
+
+      const examsByDate = buildExamsByDate(subjects);
+
+      // months from Aug (startYear) ... Jul (startYear+1)
+      const months = [];
+      for (let i = 0; i < 12; i++) {
+        const mm = (7 + i) % 12; // 7 -> Aug
+        const y = mm >= 8 ? startYear : (mm >= 0 && mm <= 6 ? startYear + 1 : startYear);
+        months.push({ y, m: mm });
+      }
+
+      months.forEach(({ y, m }) => {
+        const tile = document.createElement('div'); tile.className = 'month-tile';
+        const monthName = new Date(y, m, 1).toLocaleString('de-CH', { month: 'long' });
+        const header = document.createElement('div'); header.className = 'month-header'; header.textContent = `${monthName} ${y}`;
+
+        const mini = document.createElement('div'); mini.className = 'month-mini';
+        const weekdays = document.createElement('div'); weekdays.className = 'mini-weekdays'; weekdays.innerHTML = '<div>MO</div><div>DI</div><div>MI</div><div>DO</div><div>FR</div><div>SA</div><div>SO</div>';
+        const grid = document.createElement('div'); grid.className = 'mini-grid';
+
+        // prepare first day alignment (Monday)
+        const first = new Date(y, m, 1);
+        const shift = (first.getDay() + 6) % 7; // 0..6 where 0=Mon
+        // blank placeholders
+        for (let b = 0; b < shift; b++) { const bd = document.createElement('div'); bd.className = 'mini-day'; bd.style.visibility = 'hidden'; grid.appendChild(bd); }
+
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+        for (let d = 1; d <= daysInMonth; d++) {
+          const key = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const day = document.createElement('div'); day.className = 'mini-day';
+          if (examsByDate[key] && examsByDate[key].length > 0) day.classList.add('has-exam');
+          day.title = `${key}: ${examsByDate[key] ? examsByDate[key].length : 0} Prüfung(en)`;
+          grid.appendChild(day);
+        }
+
+        mini.appendChild(weekdays);
+        mini.appendChild(grid);
+        tile.appendChild(header);
+        tile.appendChild(mini);
+        if (yearGrid) yearGrid.appendChild(tile);
+      });
+    }
+
+    /* ------------------ View toggles ------------------ */
+    document.querySelectorAll('.btn[data-view]').forEach(b => b.addEventListener('click', () => {
+      const v = b.dataset.view;
+      currentView = v;
+      setActiveViewButtons(currentView);
+      render();
+    }));
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+      if (currentView === 'year') {
+        // move school year back one year (keep to August)
+        dt = new Date(dt.getFullYear() - 1, 7, 1);
+      } else {
+        dt = new Date(dt.getFullYear(), dt.getMonth() - 1, 1);
+      }
+      render();
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      if (currentView === 'year') {
+        dt = new Date(dt.getFullYear() + 1, 7, 1);
+      } else {
+        dt = new Date(dt.getFullYear(), dt.getMonth() + 1, 1);
+      }
+      render();
+    });
+    if (todayBtn) todayBtn.addEventListener('click', () => { dt = new Date(); render(); });
+
+    // Click outside closes submenu (accessibility / convenience)
+        const statsToggle = document.querySelector('.dropdown-btn');
+        const statsSubmenu = statsToggle ? statsToggle.nextElementSibling : null;
+    
+        document.addEventListener('click', (e) => {
+          if (!statsSubmenu || !statsToggle) return;
+          const target = e.target;
+          // If the click is inside the toggle or submenu, do nothing
+          if (statsSubmenu.contains(target) || statsToggle.contains(target)) return;
+          if (statsSubmenu.classList.contains('show')) {
+            // reuse existing function that closes submenus
+            closeAllSubMenus();
+            statsToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+    /* ------------------ Resize / storage / initial render ------------------ */
+    window.addEventListener('resize', () => adjustGridHeight());
+
+    // initial
+    render();
+
+    // auto update when localStorage changes
+    window.addEventListener('storage', (e) => { if (e.key === KEY) render(); });
+
+  })();
+</script>
+
+</html>
