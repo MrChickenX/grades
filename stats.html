@@ -6,24 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Statistik</title>
   <link rel="stylesheet" href="style.css">
-
 </head>
+  <script src="theme.js" defer></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-  :root {
-    --base-clr: #11121a;
-    --line-clr: #42434a;
-    --hover-clr: #222533;
-    --text-clr: #e6e6ef;
-    --accent-clr: #5e63ff;
-    --secondary-text-clr: #b0b3c1;
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-  }
 
   html {
     font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -33,8 +19,8 @@
   body {
     min-height: 100vh;
     min-height: 100dvh;
-    background-color: var(--base-clr);
-    color: var(--text-clr);
+    background-color: var(--sidebar-bg);
+    color: var(--sb-fontcolor);
     display: grid;
     grid-template-columns: auto 1fr;
   }
@@ -44,8 +30,8 @@
     height: 100vh;
     width: 250px;
     padding: 5px 1em;
-    background-color: var(--base-clr);
-    border-right: 1px solid var(--line-clr);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
 
     position: sticky;
     top: 0;
@@ -75,11 +61,16 @@
   }
 
   #sidebar ul li.active a {
-    color: var(--accent-clr);
+    /* active sidebar link */
+    color: var(--accent) !important;
+  }
 
-    svg {
-      fill: var(--accent-clr);
-    }
+  #sidebar ul li.active a span {
+    color: var(--accent) !important;
+  }
+
+  #sidebar ul li.active a svg {
+    fill: var(--accent) !important;
   }
 
   #sidebar a,
@@ -88,7 +79,7 @@
     border-radius: .5em;
     padding: .85em;
     text-decoration: none;
-    color: var(--text-clr);
+    color: var(--sb-fontcolor);
     display: flex;
     align-items: center;
     gap: 1em;
@@ -105,7 +96,7 @@
 
   #sidebar svg {
     flex-shrink: 0;
-    fill: var(--text-clr);
+    fill: var(--sb-fontcolor);
   }
 
   #sidebar a span,
@@ -113,9 +104,14 @@
     flex-grow: 1;
   }
 
+  #sidebar a,
+  #sidebar span {
+    color: var(--sb-fontcolor) !important;
+  }
+
   #sidebar a:hover,
   #sidebar .dropdown-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   #sidebar .sub-menu {
@@ -158,7 +154,7 @@
   }
 
   #toggle-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   main {
@@ -166,13 +162,13 @@
   }
 
   main p {
-    color: var(--secondary-text-clr);
+    color: var(--sb-fontcolor);
     margin-top: 5px;
     margin-bottom: 15px;
   }
 
   .container {
-    border: 1px solid var(--line-clr);
+    border: 1px solid var(--border);
     border-radius: 1em;
     margin-bottom: 20px;
     padding: min(3em, 15%);
@@ -181,6 +177,40 @@
     p {
       margin-top: 1em
     }
+  }
+
+  /* --- WARN-BOX styling --- */
+  .warn-box {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 165, 0, 0.12);
+    border: 1px solid rgba(255, 165, 0, 0.28);
+    color: #ffd98a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .warn-box .warn-text {
+    flex: 1;
+  }
+
+  .warn-close {
+    background: transparent;
+    border: none;
+    color: #ffd98a;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    line-height: 1;
+  }
+
+  .warn-close:hover {
+    background: rgba(255, 165, 0, 0.18);
   }
 
   @media(max-width: 800px) {
@@ -201,7 +231,7 @@
       height: 60px;
       width: 100%;
       border-right: none;
-      border-top: 1px solid var(--line-clr);
+      border-top: 1px solid var(--border);
       padding: 0;
       position: fixed;
       top: unset;
@@ -242,8 +272,8 @@
         box-sizing: border-box;
         height: 60px;
         width: 100%;
-        background-color: var(--hover-clr);
-        border-top: 1px solid var(--line-clr);
+        background-color: var(--glass);
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: center;
 
@@ -331,19 +361,11 @@
     </ul>
   </nav>
   <main class="content">
-    <!-- white inner box with border so elements are not directly at the screen edge -->
+    <header>
+      <div class="title">Stats</div>
+    </header>
     <div class="stats-inner">
-
-      <header>
-        <h1>Statistiken — Erweiterte Ansicht</h1>
-        <div class="controls">
-          <button id="refresh" class="btn">↻ Aktualisieren</button>
-        </div>
-      </header>
-
-      <!-- views: dashboard, exams, data -->
       <section id="view-dashboard" class="view active">
-        <!-- Top overview -->
         <section class="grid" id="overview">
           <div class="card">
             <div class="muted">Anzahl Fächer</div>
@@ -653,7 +675,8 @@
     window.addEventListener('storage', (e) => { if (e.key === KEY) { render(); } });
     // polling fallback
     setInterval(() => { const raw = localStorage.getItem(KEY); if (raw !== lastRaw) { lastRaw = raw; render(); } }, 1500);
-    refreshBtn.addEventListener('click', () => render());
+    // refresh button may not exist in this layout — guard before attaching
+    if (refreshBtn) { refreshBtn.addEventListener('click', () => render()); }
 
     // initial render
     render();

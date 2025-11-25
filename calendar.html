@@ -6,23 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Kalender</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
 </head>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-  :root {
-    --base-clr: #11121a;
-    --line-clr: #42434a;
-    --hover-clr: #222533;
-    --text-clr: #e6e6ef;
-    --accent-clr: #5e63ff;
-    --secondary-text-clr: #b0b3c1;
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-  }
 
   html {
     font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -32,8 +19,8 @@
   body {
     min-height: 100vh;
     min-height: 100dvh;
-    background-color: var(--base-clr);
-    color: var(--text-clr);
+    background-color: var(--sidebar-bg);
+    color: var(--sb-fontcolor);
     display: grid;
     grid-template-columns: auto 1fr;
   }
@@ -43,8 +30,8 @@
     height: 100vh;
     width: 250px;
     padding: 5px 1em;
-    background-color: var(--base-clr);
-    border-right: 1px solid var(--line-clr);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
 
     position: sticky;
     top: 0;
@@ -74,11 +61,16 @@
   }
 
   #sidebar ul li.active a {
-    color: var(--accent-clr);
+    /* active sidebar link */
+    color: var(--accent) !important;
+  }
 
-    svg {
-      fill: var(--accent-clr);
-    }
+  #sidebar ul li.active a span {
+    color: var(--accent) !important;
+  }
+
+  #sidebar ul li.active a svg {
+    fill: var(--accent) !important;
   }
 
   #sidebar a,
@@ -87,7 +79,7 @@
     border-radius: .5em;
     padding: .85em;
     text-decoration: none;
-    color: var(--text-clr);
+    color: var(--sb-fontcolor);
     display: flex;
     align-items: center;
     gap: 1em;
@@ -104,7 +96,7 @@
 
   #sidebar svg {
     flex-shrink: 0;
-    fill: var(--text-clr);
+    fill: var(--sb-fontcolor);
   }
 
   #sidebar a span,
@@ -112,9 +104,14 @@
     flex-grow: 1;
   }
 
+  #sidebar a,
+  #sidebar span {
+    color: var(--sb-fontcolor) !important;
+  }
+
   #sidebar a:hover,
   #sidebar .dropdown-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   #sidebar .sub-menu {
@@ -157,7 +154,7 @@
   }
 
   #toggle-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   main {
@@ -165,13 +162,13 @@
   }
 
   main p {
-    color: var(--secondary-text-clr);
+    color: var(--sb-fontcolor);
     margin-top: 5px;
     margin-bottom: 15px;
   }
 
   .container {
-    border: 1px solid var(--line-clr);
+    border: 1px solid var(--border);
     border-radius: 1em;
     margin-bottom: 20px;
     padding: min(3em, 15%);
@@ -180,6 +177,40 @@
     p {
       margin-top: 1em
     }
+  }
+
+  /* --- WARN-BOX styling --- */
+  .warn-box {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 165, 0, 0.12);
+    border: 1px solid rgba(255, 165, 0, 0.28);
+    color: #ffd98a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .warn-box .warn-text {
+    flex: 1;
+  }
+
+  .warn-close {
+    background: transparent;
+    border: none;
+    color: #ffd98a;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    line-height: 1;
+  }
+
+  .warn-close:hover {
+    background: rgba(255, 165, 0, 0.18);
   }
 
   @media(max-width: 800px) {
@@ -200,7 +231,7 @@
       height: 60px;
       width: 100%;
       border-right: none;
-      border-top: 1px solid var(--line-clr);
+      border-top: 1px solid var(--border);
       padding: 0;
       position: fixed;
       top: unset;
@@ -241,8 +272,8 @@
         box-sizing: border-box;
         height: 60px;
         width: 100%;
-        background-color: var(--hover-clr);
-        border-top: 1px solid var(--line-clr);
+        background-color: var(--glass);
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: center;
 
@@ -330,12 +361,11 @@
     </ul>
   </nav>
   <main class="content">
+    <header>
+      <div class="title">Kalender</div>
+    </header>
     <div style="max-width:1200px;margin:18px auto;">
       <div class="stats-inner">
-        <header>
-          <h1>Kalender</h1>
-        </header>
-
         <div class="cal-header">
           <div class="cal-controls">
             <button id="prevMonth" class="btn">◀</button>
@@ -368,12 +398,12 @@
             </div>
           </div>
 
-          <aside class="cal-right">
+          <!--          <aside class="cal-right">
             <div class="card" style="margin-top:12px">
               <div class="muted">Termine diese Woche</div>
               <div id="weekList" style="margin-top:8px; max-height:320px; overflow:auto"></div>
             </div>
-          </aside>
+          </aside>-->
         </div>
       </div>
     </div>
@@ -487,11 +517,20 @@
     /* ------------------ Render (Month) ------------------ */
     function render() {
       const subjects = load();
-      if (currentView === 'year') { renderYear(subjects); return; }
+      if (currentView === 'year') {
+        // hide the weekday header when showing year view (it only applies to month view)
+        const weekdaysEl = document.querySelector('.cal-weekdays');
+        if (weekdaysEl) weekdaysEl.style.display = 'none';
+        renderYear(subjects);
+        return;
+      }
 
       // month view
       if (yearView) yearView.style.display = 'none';
       if (calGrid) calGrid.style.display = 'grid';
+      // ensure weekday header is visible in month view
+      const weekdaysEl = document.querySelector('.cal-weekdays');
+      if (weekdaysEl) weekdaysEl.style.display = 'grid';
       const monthStart = startOfMonth(dt); const startDay = new Date(monthStart);
       const shift = (startDay.getDay() + 6) % 7; startDay.setDate(startDay.getDate() - shift);
 
@@ -651,7 +690,7 @@
         // prepare first day alignment (Monday)
         const first = new Date(y, m, 1);
         const shift = (first.getDay() + 6) % 7; // 0..6 where 0=Mon
-        // blank placeholders
+        // leading blank placeholders so the first day aligns to the correct weekday
         for (let b = 0; b < shift; b++) { const bd = document.createElement('div'); bd.className = 'mini-day'; bd.style.visibility = 'hidden'; grid.appendChild(bd); }
 
         const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -661,6 +700,14 @@
           if (examsByDate[key] && examsByDate[key].length > 0) day.classList.add('has-exam');
           day.title = `${key}: ${examsByDate[key] ? examsByDate[key].length : 0} Prüfung(en)`;
           grid.appendChild(day);
+        }
+
+        // trailing placeholders so the grid always has full weeks (7 columns)
+        const totalCells = shift + daysInMonth;
+        const remainder = totalCells % 7;
+        if (remainder !== 0) {
+          const trailing = 7 - remainder;
+          for (let t = 0; t < trailing; t++) { const td = document.createElement('div'); td.className = 'mini-day'; td.style.visibility = 'hidden'; grid.appendChild(td); }
         }
 
         mini.appendChild(weekdays);
@@ -699,20 +746,20 @@
     if (todayBtn) todayBtn.addEventListener('click', () => { dt = new Date(); render(); });
 
     // Click outside closes submenu (accessibility / convenience)
-        const statsToggle = document.querySelector('.dropdown-btn');
-        const statsSubmenu = statsToggle ? statsToggle.nextElementSibling : null;
-    
-        document.addEventListener('click', (e) => {
-          if (!statsSubmenu || !statsToggle) return;
-          const target = e.target;
-          // If the click is inside the toggle or submenu, do nothing
-          if (statsSubmenu.contains(target) || statsToggle.contains(target)) return;
-          if (statsSubmenu.classList.contains('show')) {
-            // reuse existing function that closes submenus
-            closeAllSubMenus();
-            statsToggle.setAttribute('aria-expanded', 'false');
-          }
-        });
+    const statsToggle = document.querySelector('.dropdown-btn');
+    const statsSubmenu = statsToggle ? statsToggle.nextElementSibling : null;
+
+    document.addEventListener('click', (e) => {
+      if (!statsSubmenu || !statsToggle) return;
+      const target = e.target;
+      // If the click is inside the toggle or submenu, do nothing
+      if (statsSubmenu.contains(target) || statsToggle.contains(target)) return;
+      if (statsSubmenu.classList.contains('show')) {
+        // reuse existing function that closes submenus
+        closeAllSubMenus();
+        statsToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
 
     /* ------------------ Resize / storage / initial render ------------------ */
     window.addEventListener('resize', () => adjustGridHeight());

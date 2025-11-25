@@ -6,23 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
 </head>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-  :root {
-    --base-clr: #11121a;
-    --line-clr: #42434a;
-    --hover-clr: #222533;
-    --text-clr: #e6e6ef;
-    --accent-clr: #5e63ff;
-    --secondary-text-clr: #b0b3c1;
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-  }
 
   html {
     font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -32,8 +19,8 @@
   body {
     min-height: 100vh;
     min-height: 100dvh;
-    background-color: var(--base-clr);
-    color: var(--text-clr);
+    background-color: var(--sidebar-bg);
+    color: var(--sb-fontcolor);
     display: grid;
     grid-template-columns: auto 1fr;
   }
@@ -43,8 +30,8 @@
     height: 100vh;
     width: 250px;
     padding: 5px 1em;
-    background-color: var(--base-clr);
-    border-right: 1px solid var(--line-clr);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
 
     position: sticky;
     top: 0;
@@ -74,11 +61,16 @@
   }
 
   #sidebar ul li.active a {
-    color: var(--accent-clr);
+    /* active sidebar link */
+    color: var(--accent) !important;
+  }
 
-    svg {
-      fill: var(--accent-clr);
-    }
+  #sidebar ul li.active a span {
+    color: var(--accent) !important;
+  }
+
+  #sidebar ul li.active a svg {
+    fill: var(--accent) !important;
   }
 
   #sidebar a,
@@ -87,7 +79,7 @@
     border-radius: .5em;
     padding: .85em;
     text-decoration: none;
-    color: var(--text-clr);
+    color: var(--sb-fontcolor);
     display: flex;
     align-items: center;
     gap: 1em;
@@ -104,7 +96,7 @@
 
   #sidebar svg {
     flex-shrink: 0;
-    fill: var(--text-clr);
+    fill: var(--sb-fontcolor);
   }
 
   #sidebar a span,
@@ -112,9 +104,15 @@
     flex-grow: 1;
   }
 
+  #sidebar a,
+  #sidebar .dropdown-btn,
+  #sidebar span {
+    color: var(--sb-fontcolor);
+  }
+
   #sidebar a:hover,
   #sidebar .dropdown-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   #sidebar .sub-menu {
@@ -157,7 +155,7 @@
   }
 
   #toggle-btn:hover {
-    background-color: var(--hover-clr);
+    background-color: var(--glass);
   }
 
   main {
@@ -165,13 +163,13 @@
   }
 
   main p {
-    color: var(--secondary-text-clr);
+    color: var(--sb-fontcolor);
     margin-top: 5px;
     margin-bottom: 15px;
   }
 
   .container {
-    border: 1px solid var(--line-clr);
+    border: 1px solid var(--border);
     border-radius: 1em;
     margin-bottom: 20px;
     padding: min(3em, 15%);
@@ -234,7 +232,7 @@
       height: 60px;
       width: 100%;
       border-right: none;
-      border-top: 1px solid var(--line-clr);
+      border-top: 1px solid var(--border);
       padding: 0;
       position: fixed;
       top: unset;
@@ -275,8 +273,8 @@
         box-sizing: border-box;
         height: 60px;
         width: 100%;
-        background-color: var(--hover-clr);
-        border-top: 1px solid var(--line-clr);
+        background-color: var(--glass);
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: center;
 
@@ -365,21 +363,8 @@
   </nav>
   <main class="content" id="main">
     <header>
-      <div>Fächer- & Notenverwaltung</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div class="menu-panel-global">
-          <button id="globalMenuBtn" class="btn">⋯</button>
-          <div id="globalMenu" class="menu-panel" style="display:none">
-            <div style="font-weight:800;padding:6px 8px;color:#fff">Einstellungen</div>
-            <div style="padding:6px;">
-              <button id="openTypes" style="margin-bottom:6px">Fächer-Typen verwalten ▸</button>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
-                <label style="font-weight:700;color:#fff; font-size: 12px;">Ungenügende Noten markieren</label>
-                <input id="markLow" type="checkbox" />
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="title">Dashboard</div>
+      <!-- Global menu removed -->
       </div>
     </header>
 
@@ -470,10 +455,7 @@
     const newSubjectName = document.getElementById('newSubjectName');
     const addSubjectBtn = document.getElementById('addSubjectBtn');
     const cancelAdd = document.getElementById('cancelAdd');
-    const globalMenuBtn = document.getElementById('globalMenuBtn');
-    const globalMenu = document.getElementById('globalMenu');
-    const openTypes = document.getElementById('openTypes');
-    const markLowCheckbox = document.getElementById('markLow');
+    // Global menu removed
     const emojiPicker = document.getElementById('emojiPicker');
     const floatingMenu = document.getElementById('floatingMenu');
     const statsToggle = document.getElementById('statsToggle');
@@ -483,7 +465,10 @@
     const saveDiskBtn = document.getElementById('saveDiskBtn');
     const fileInput = document.getElementById('fileInput');
 
-    const EMOJIS = ['📘', '🔢', '📚', '🧬', '⚗️', '🔭', '🎨', '🎵', '💻', '⚽️', '🧪', '📈', '✏️', '🧮', '🧑‍🔬', '🏫'];
+    // <-- safe reference to optional checkbox (may be missing in some pages)
+    const markLowCheckbox = document.getElementById('markLowCheckbox');
+
+    const EMOJIS = ['📘', '🔢', '📚', '🧬', '⚗️', '🔭', '🎨', '🎵', '💻', '⚽️', '🧪', '📈', '✏️', '🧮', '🧑‍🔬', '🏫', '⚽', '⚖️', '🍳', '🇫🇷', '🇮🇹', '🇩🇪', '🇬🇧', '👨‍🔧'];
 
     let subjects = load();
     let settings = loadSettings();
@@ -500,58 +485,46 @@
       });
     }
 
-    // add subject
-    openAdd.addEventListener('click', () => { inlineAdd.style.display = 'inline-flex'; newSubjectName.focus(); });
-    cancelAdd.addEventListener('click', () => { inlineAdd.style.display = 'none'; newSubjectName.value = ''; });
-    addSubjectBtn.addEventListener('click', () => { const name = (newSubjectName.value || '').trim(); if (!name) return newSubjectName.focus(); addSubject(name); newSubjectName.value = ''; inlineAdd.style.display = 'none'; });
-    newSubjectName.addEventListener('keydown', e => { if (e.key === 'Enter') addSubjectBtn.click(); if (e.key === 'Escape') cancelAdd.click(); });
+    // add subject (guarding existence)
+    if (openAdd && inlineAdd && newSubjectName && cancelAdd && addSubjectBtn) {
+      openAdd.addEventListener('click', () => { inlineAdd.style.display = 'inline-flex'; newSubjectName.focus(); });
+      cancelAdd.addEventListener('click', () => { inlineAdd.style.display = 'none'; newSubjectName.value = ''; });
+      addSubjectBtn.addEventListener('click', () => { const name = (newSubjectName.value || '').trim(); if (!name) return newSubjectName.focus(); addSubject(name); newSubjectName.value = ''; inlineAdd.style.display = 'none'; });
+      newSubjectName.addEventListener('keydown', e => { if (e.key === 'Enter') addSubjectBtn.click(); if (e.key === 'Escape') cancelAdd.click(); });
+    }
 
-    // export / import handlers
-    exportBtn.addEventListener('click', () => exportData());
-    importBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importDataFromFile(f); fileInput.value = ''; });
+    // export / import handlers (guard DOM elements)
+    if (exportBtn) exportBtn.addEventListener('click', () => exportData());
+    if (importBtn && fileInput) importBtn.addEventListener('click', () => fileInput.click());
+    if (fileInput) fileInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importDataFromFile(f); e.target.value = ''; });
 
     // save to disk using File System Access API if available
-    saveDiskBtn.addEventListener('click', async () => {
-      if ('showSaveFilePicker' in window) {
-        try {
-          const handle = await window.showSaveFilePicker({ suggestedName: 'subjects.json', types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
-          const writable = await handle.createWritable();
-          await writable.write(JSON.stringify({ subjects, settings }, null, 2));
-          await writable.close();
-          alert('Daten in Datei gespeichert.');
-        } catch (err) { console.error(err); alert('Speichern abgebrochen oder fehlgeschlagen.'); }
-      } else {
-        // fallback: export as download
-        exportData();
-      }
-    });
-
-    // global menu open/close
-    globalMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleGlobalMenu(e); });
-    function toggleGlobalMenu(e) { if (globalMenu.style.display === 'none') { positionPanel(globalMenu, e.target.getBoundingClientRect()); globalMenu.style.display = 'block'; } else globalMenu.style.display = 'none'; }
-    // prevent globalMenu from closing when interacting
-    globalMenu.addEventListener('click', (e) => e.stopPropagation());
-    document.addEventListener('click', (e) => {
-      // Schließe Menüs nur, wenn der Klick ausserhalb aller Panels stattfand
-      if (!globalMenu.contains(e.target) && !floatingMenu.contains(e.target) && !emojiPicker.contains(e.target)) {
-        globalMenu.style.display = 'none';
-        floatingMenu.style.display = 'none';
-        emojiPicker.style.display = 'none';
-      }
-    });
-    // Damit Interaktion innerhalb der Panels nicht die globalen Listener auslöst
-    globalMenu.addEventListener('click', e => e.stopPropagation());
-    floatingMenu.addEventListener('click', e => e.stopPropagation());
-    emojiPicker.addEventListener('click', e => e.stopPropagation());
-
-    markLowCheckbox.checked = settings.markLow;
-    markLowCheckbox.addEventListener('change', () => { settings.markLow = markLowCheckbox.checked; saveSettings(); renderSubjects(); updateSummary(); });
-
-    openTypes.addEventListener('click', (e) => { e.stopPropagation(); openTypesPanel(e); });
-    function openTypesPanel(e) { // show floating panel with all subjects and select
-      const html = document.createElement('div'); html.style.padding = '6px'; html.style.maxHeight = '240px'; html.style.overflow = 'auto'; subjects.forEach(s => { const row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'center'; row.style.justifyContent = 'space-between'; row.style.gap = '8px'; row.style.padding = '6px'; const label = document.createElement('div'); label.textContent = s.name; label.style.color = '#fff'; const sel = document.createElement('select'); sel.innerHTML = '<option value="core">Kernfach</option><option value="extension">Erweiterung</option>'; sel.value = s.type; sel.style.background = 'transparent'; sel.style.color = '#fff'; sel.addEventListener('change', (ev) => { s.type = sel.value; save(); renderSubjects(); updateSummary(); }); row.appendChild(label); row.appendChild(sel); html.appendChild(row); }); floatingMenu.innerHTML = ''; floatingMenu.appendChild(html); positionPanel(floatingMenu, e.target.getBoundingClientRect()); floatingMenu.style.display = 'block';
+    if (saveDiskBtn) {
+      saveDiskBtn.addEventListener('click', async () => {
+        if ('showSaveFilePicker' in window) {
+          try {
+            const handle = await window.showSaveFilePicker({ suggestedName: 'subjects.json', types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
+            const writable = await handle.createWritable();
+            await writable.write(JSON.stringify({ subjects, settings }, null, 2));
+            await writable.close();
+            alert('Daten in Datei gespeichert.');
+          } catch (err) {
+            // Wenn der Benutzer den Dialog abbricht, bekommt man oft ein AbortError — das ist kein "Fehler" im Sinne von App-Bug.
+            if (err && err.name === 'AbortError') {
+              // still ignore silently (no console.error)
+              return;
+            }
+            console.error(err);
+            alert('Speichern abgebrochen oder fehlgeschlagen.');
+          }
+        } else {
+          // fallback: export as download
+          exportData();
+        }
+      });
     }
+
+    // Global menu logic removed
 
     // helpers: load/save
     function load() { try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch (e) { } return demo(); }
@@ -581,7 +554,12 @@
         try {
           const parsed = JSON.parse(ev.target.result);
           if (parsed.subjects) { subjects = parsed.subjects; }
-          if (parsed.settings) { settings = parsed.settings; markLowCheckbox.checked = settings.markLow; saveSettings(); }
+          if (parsed.settings) {
+            settings = parsed.settings;
+            // Only touch DOM if the checkbox exists
+            if (markLowCheckbox) markLowCheckbox.checked = !!settings.markLow;
+            saveSettings();
+          }
           // ensure orders
           subjects.forEach((s, i) => s.order = i);
           save(); renderSubjects(); updateSummary(); alert('Daten erfolgreich importiert.');
@@ -593,6 +571,35 @@
 
     // position a floating panel near an element rect, keeps on-screen
     function positionPanel(panel, rect) { const padding = 8; const w = panel.offsetWidth || 240; let left = rect.right + 6; let top = rect.top; if (left + w > window.innerWidth - padding) left = rect.left - w - 6; if (left < padding) left = padding; if (top + panel.offsetHeight > window.innerHeight - padding) top = window.innerHeight - panel.offsetHeight - padding; if (top < padding) top = padding; panel.style.left = left + 'px'; panel.style.top = top + 'px'; }
+
+    // helper: bestimmt sinnvolle Dezimalstellen aus dem Schritt (z.B. 0.25 -> 2)
+    function decimalsFromStep(step) {
+      const s = String(step);
+      if (s.indexOf('.') === -1) return 0;
+      return s.split('.')[1].length;
+    }
+
+    // helper: sicheres Formatieren (vermeidet 4.6000000000000005)
+    function formatNumber(value, decimals) {
+      const d = (typeof decimals === 'number') ? decimals : 1;
+      return parseFloat(Number(value).toFixed(d));
+    }
+
+    // sichere Runden-Funktion: rundet auf nearest step oder auf 1 Dezimalstelle (default)
+    function roundToStep(value, step) {
+      if (value === null || value === undefined || isNaN(value)) return value;
+      const num = Number(value);
+      if (!step || step === 'none') {
+        return formatNumber(num, 1);
+      }
+      const s = parseFloat(step);
+      if (isNaN(s) || s <= 0) {
+        return formatNumber(num, 1);
+      }
+      const rounded = Math.round((num + Number.EPSILON) / s) * s;
+      const decimals = decimalsFromStep(s);
+      return formatNumber(rounded, decimals);
+    }
 
     // render subjects and cards
     function renderSubjects() {
@@ -630,9 +637,8 @@
             // calculated note
             let calcNote = null;
             if (ex.maxPoints && ex.achievedPoints) { const max = parseFloat(ex.maxPoints) || 0; const ach = parseFloat(ex.achievedPoints) || 0; if (max > 0) { calcNote = 1 + (ach / max) * 5; } }
-            // apply rounding to calculated note (rounding options include 0.25)
-            function roundToStep(value, step) { if (step === 'none' || !step) return Math.round(value * 10) / 10; const s = parseFloat(step); if (isNaN(s) || s <= 0) return Math.round(value * 10) / 10; return Math.round(value / s) * s; }
-            const calcRounded = calcNote !== null ? roundToStep(calcNote, ex.round) : null;
+            // apply rounding to calculated note (uses the shared roundToStep helper)
+            const calcRounded = calcNote !== null ? roundToStep(calcNote, ex.round) : null
 
             const grade = document.createElement('div'); grade.className = 'grade'; grade.textContent = ex.grade || '-';
             // color low if setting enabled and grade <4.0
@@ -725,6 +731,41 @@
         card.addEventListener('dragend', () => { card.classList.remove('dragging'); Array.from(cardsEl.children).forEach((c, i) => { const id = c.dataset.id; const subj = subjects.find(x => x.id === id); if (subj) subj.order = i; }); save(); renderSubjects(); });
 
       });
+
+      // helper: bestimmt sinnvolle Dezimalstellen aus dem Schritt (z.B. 0.25 -> 2)
+      function decimalsFromStep(step) {
+        const s = String(step);
+        if (s.indexOf('.') === -1) return 0;
+        return s.split('.')[1].length;
+      }
+
+      // helper: sicheres Formatieren (vermeidet 4.6000000000000005)
+      function formatNumber(value, decimals) {
+        // falls decimals nicht angegeben: behandle als 1 Dezimalstelle (wie vorher)
+        const d = (typeof decimals === 'number') ? decimals : 1;
+        // toFixed sorgt für stabile Darstellung, parseFloat entfernt unnötige Nullen
+        return parseFloat(Number(value).toFixed(d));
+      }
+
+      // sichere Runden-Funktion: rundet auf nearest step oder auf 1 Dezimalstelle (default)
+      function roundToStep(value, step) {
+        if (value === null || value === undefined || isNaN(value)) return value;
+        const num = Number(value);
+        // default: runde auf 1 Dezimalstelle (wie vorher Math.round(value*10)/10)
+        if (!step || step === 'none') {
+          return formatNumber(num, 1);
+        }
+        const s = parseFloat(step);
+        if (isNaN(s) || s <= 0) {
+          return formatNumber(num, 1);
+        }
+        // Runde auf nächstes Vielfaches von s
+        // Addiere eine kleine EPSILON vor dem Runden um Grenzfälle zu stabilisieren
+        const rounded = Math.round((num + Number.EPSILON) / s) * s;
+        // Bestimme sinnvolle Dezimalstellen aus dem Schritt (z.B. 0.25 -> 2)
+        const decimals = decimalsFromStep(s);
+        return formatNumber(rounded, decimals);
+      }
     }
 
     // allow dragover on container to place dragged card
@@ -797,10 +838,15 @@
     }
     function deleteExam(subjectId, examId) { const s = subjects.find(x => x.id === subjectId); if (!s) return; s.exams = s.exams.filter(x => x.id !== examId); save(); renderSubjects(); updateSummary(); }
 
-    function computeSubjectAvg(subject) { if (!subject.exams || subject.exams.length === 0) return null; let sum = 0, weightSum = 0; subject.exams.forEach(ex => { const g = parseFloat(ex.grade); if (!isNaN(g)) { const mult = parseFloat(ex.multiplier) || 1; sum += g * mult; weightSum += mult; } }); if (weightSum === 0) return null; let avg = sum / weightSum; avg = Math.round(avg * 10) / 10; return avg; }
+    function computeSubjectAvg(subject) {
+      if (!subject.exams || subject.exams.length === 0) return null; let sum = 0, weightSum = 0; subject.exams.forEach(ex => { const g = parseFloat(ex.grade); if (!isNaN(g)) { const mult = parseFloat(ex.multiplier) || 1; sum += g * mult; weightSum += mult; } }); if (weightSum === 0) return null; let avg = sum / weightSum;
+      return formatNumber(avg, 1);
+    }
 
     function updateSummary() { const core = subjects.filter(s => s.type === 'core'); const ext = subjects.filter(s => s.type === 'extension'); const coreAvg = averageOfList(core); const extAvg = averageOfList(ext); const totalAvg = averageOfList(subjects); document.getElementById('totalAvg').textContent = totalAvg === null ? '-' : totalAvg; document.getElementById('coreAvg').textContent = coreAvg === null ? '-' : coreAvg; document.getElementById('extAvg').textContent = extAvg === null ? '-' : extAvg; }
-    function averageOfList(list) { if (!list.length) return null; let sum = 0, count = 0; list.forEach(s => { const a = computeSubjectAvg(s); if (a !== null) { sum += a; count++; } }); if (count === 0) return null; return Math.round((sum / count) * 10) / 10; }
+    function averageOfList(list) {
+      if (!list.length) return null; let sum = 0, count = 0; list.forEach(s => { const a = computeSubjectAvg(s); if (a !== null) { sum += a; count++; } }); if (count === 0) return null; return formatNumber(sum / count, 1);
+    }
 
     function sortExamsForSubject(subjectId, mode) {
       const s = subjects.find(x => x.id === subjectId); if (!s) return; if (!s.exams) return; switch (mode) { case 'Datum↓': s.exams.sort((a, b) => (b.date || '').localeCompare(a.date || '')); break; case 'Datum↑': s.exams.sort((a, b) => (a.date || '').localeCompare(b.date || '')); break; case 'Name A→Z': s.exams.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break; case 'Name Z→A': s.exams.sort((a, b) => (b.name || '').localeCompare(a.name || '')); break; case 'Note ↓': s.exams.sort((a, b) => (parseFloat(b.grade) || 0) - (parseFloat(a.grade) || 0)); break; case 'Note ↑': s.exams.sort((a, b) => (parseFloat(a.grade) || 0) - (parseFloat(b.grade) || 0)); break; }
@@ -846,6 +892,32 @@
 
     // einmal initial
     attachMoveHandlers();
+
+    const menus = [];
+    if (emojiPicker) menus.push(emojiPicker);
+    if (floatingMenu) menus.push(floatingMenu);
+
+    // Klick ausserhalb schliesst alle Menus
+    document.addEventListener('click', (e) => {
+      // wenn Klick innerhalb eines Menus oder auf einem Toggle war, nichts tun
+      if (e.target.closest('.emoji-picker') ||
+        e.target.closest('.menu-panel') ||
+        e.target.closest('[data-menu-toggle]') ||
+        e.target.closest('.card-actions') // optional: Aktionen/Buttons ignorieren
+      ) {
+        return;
+      }
+
+      // sonst alle Menus schliessen (sicherheitscheck: menu kann undefined sein)
+      menus.forEach(m => { if (m) m.style.display = 'none'; });
+    });
+
+    // Escape-Taste schliesst ebenfalls
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        menus.forEach(m => { if (m) m.style.display = 'none'; });
+      }
+    });
 
   })();
 </script>

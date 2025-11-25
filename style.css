@@ -1,29 +1,46 @@
 :root {
   /* Dark Mode */
-  --bg: #1c212d;
+  --bg: #ececec;
   --accent: #0ea5a4;
   --muted: #94a3b8;
-  --card: #232a37;
+  --card: #e0e0e0;
   --gap: 12px;
-  --glass: rgba(255, 255, 255, 0.03);
+  --glass: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.16);
+  --boxshadow: rgba(0, 0, 0, 0.2);
   --warning-bg: rgba(255, 223, 93, 0.12);
+  --fontcolor: #1f1f1f;
   --warning-border: #ffcc00;
   --danger: #ff3b30;
+  --sidebar-bg: #11121a;
+  --sb-fontcolor: #e4e6eb;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
 /* reset */
 * {
-  box-sizing: border-box
+  margin: 0;
+  padding: 0;
 }
 
 /* Base page background */
 body {
   margin: 0;
-  background: #f4f6f8;
-  color: #0b1220;
+  background: var(--bg);
+  color: var(--fontcolor);
   min-height: 100vh;
   font-family: var(--font-family, Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial);
+}
+
+/* Apply theme font color broadly but allow explicit class selectors to override it */
+body * {
+  color: var(--fontcolor);
+}
+
+/* Ensure pseudo-elements inherit the computed color from their parent */
+body *::before,
+body *::after {
+  color: inherit;
 }
 
 /* header / buttons */
@@ -37,8 +54,8 @@ header {
 
 .btn {
   background: var(--card);
-  border: 1px solid rgba(255, 255, 255, .03);
-  color: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--fontcolor);
   padding: 8px 12px;
   border-radius: 10px;
   font-weight: 700;
@@ -46,7 +63,7 @@ header {
 }
 
 .btn.accent {
-  background: linear-gradient(90deg, var(--accent), #06b6b4);
+  background: var(--accent);
   color: #042027
 }
 
@@ -54,7 +71,6 @@ header {
   opacity: 0.95
 }
 
-/* index-specific */
 .topbar {
   display: flex;
   align-items: center;
@@ -71,11 +87,10 @@ header {
 .add-subject input {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(11, 18, 32, .06);
+  border: 1px solid var(--border);
   font-weight: 600
 }
 
-/* summary box */
 .summary-box {
   display: flex;
   gap: 12px;
@@ -83,7 +98,7 @@ header {
 }
 
 .summary-item {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--card);
   padding: 8px 10px;
   border-radius: 8px;
   font-weight: 800;
@@ -109,11 +124,11 @@ header {
 }
 
 .card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  background: var(--glass);
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  box-shadow: 0 6px 18px rgba(11, 18, 32, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px var(--boxshadow);
   position: relative
 }
 
@@ -178,12 +193,12 @@ header {
   justify-content: space-between;
   gap: 10px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.01);
-  border-radius: 8px
+  background: var(--glass);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--boxshadow);
 }
 
 .exam+.exam {
-  border-top: 1px solid rgba(11, 18, 32, 0.06);
   margin-top: 8px;
   padding-top: 12px
 }
@@ -200,13 +215,8 @@ header {
   padding: 6px
 }
 
-.grade.low {
-  color: var(--danger)
-}
-
-/* warning */
 .warn-box {
-  margin-top: 8px;
+  margin-bottom: 8px;
   padding: 10px;
   border-radius: 10px;
   background: var(--warning-bg);
@@ -215,12 +225,11 @@ header {
   font-weight: 700
 }
 
-/* exam form */
 .exam-form {
   margin-top: 10px;
   padding: 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--glass);
   display: flex;
   flex-direction: column;
   gap: 8px
@@ -229,24 +238,40 @@ header {
 .exam-form input,
 .exam-form textarea,
 .exam-form select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
   background: transparent;
-  color: inherit
+  color: inherit;
+  overflow: auto;
 }
 
 .exam-form .row {
   display: flex;
-  gap: 8px
+  gap: 8px;
+}
+
+.exam-form .row>* {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.exam-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 240px;
 }
 
 /* footer helpers */
 .card-sep {
   height: 2px;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--glass);
   border-radius: 4px;
-  margin-top: 10px
+  margin-top: 10px;
+  box-shadow: 0 2px 6px var(--boxshadow);
 }
 
 .card-footer {
@@ -266,11 +291,11 @@ header {
   background: var(--card);
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
   min-width: 220px;
-  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
+  box-shadow: 0 8px 24px var(--boxshadow);
   z-index: 200;
-  color: #fff
+  color: var(--fontcolor);
 }
 
 .menu-panel button {
@@ -280,19 +305,19 @@ header {
   padding: 8px;
   border: 0;
   background: none;
-  color: #fff;
+  color: var(--fontcolor);
   cursor: pointer;
   border-radius: 6px
 }
 
 .menu-panel button:hover {
-  background: rgba(255, 255, 255, 0.02)
+  background: var(--glass);
 }
 
 .menu-panel select {
   background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--fontcolor);
+  border: 1px solid var(--border);
   padding: 6px;
   border-radius: 6px
 }
@@ -304,11 +329,11 @@ header {
   background: var(--card);
   border-radius: 8px;
   padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
   display: grid;
   grid-template-columns: repeat(6, 32px);
   gap: 6px;
-  color: #fff
+  color: var(--fontcolor)
 }
 
 .emoji-picker button {
@@ -347,7 +372,7 @@ th,
 td {
   padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #f0f2f5
+  border-bottom: 1px solid var(--border)
 }
 
 .low {
@@ -369,13 +394,13 @@ td {
 .progress {
   height: 10px;
   border-radius: 6px;
-  background: #eef3f7;
+  background: var(--glass);
   overflow: hidden
 }
 
 .bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #06b6b4)
+  background: var(--accent)
 }
 
 .controls {
@@ -388,7 +413,7 @@ td {
   display: inline-block;
   padding: 6px 8px;
   border-radius: 8px;
-  background: var(--card);
+  background: var(--glass);
   font-weight: 800
 }
 
@@ -410,15 +435,23 @@ td {
 
 /* stats-inner / sidebar submenu */
 .content {
-  background: transparent;
+  background: var(--bg);
 }
 
 .stats-inner {
-  background: #11121a;
+  background: var(--glass);
   border-radius: 12px;
   padding: 18px;
-  border: 1px solid rgba(3, 10, 18, 0.04);
-  box-shadow: 0 6px 18px rgba(3, 10, 18, 0.03);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px var(--boxshadow);
+}
+
+/* Ensure the stats container expands to fit the calendar content */
+.stats-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: visible;
 }
 
 .nav-submenu {
@@ -455,7 +488,7 @@ td {
 }
 
 .nav-submenu a:hover {
-  background: rgba(255, 255, 255, 0.02)
+  background: var(--glass)
 }
 
 /* view helper */
@@ -522,19 +555,22 @@ td {
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  /* let rows size to their content so the parent can grow to fit the calendar */
+  grid-auto-rows: minmax(110px, auto);
   gap: 8px;
   width: 100%;
   align-items: stretch;
   align-content: stretch;
+  /* override inline height from JS so the full grid is shown inside its container */
+  height: auto !important;
 }
 
 .day {
   background: var(--card);
   border-radius: 10px;
   padding: 8px;
-  box-shadow: 0 6px 18px rgba(3, 10, 18, 0.04);
-  border: 1px solid rgba(3, 10, 18, 0.03);
+  box-shadow: 0 6px 18px var(--boxshadow);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   min-height: 110px;
@@ -548,7 +584,7 @@ td {
 
 .day.today {
   outline: 3px solid var(--accent);
-  box-shadow: 0 8px 24px rgba(6, 182, 175, 0.06);
+  box-shadow: 0 8px 24px var(--boxshadow);
 }
 
 .day .date-num {
@@ -623,13 +659,13 @@ td {
   text-align: right;
   border-radius: 8px;
   background: #fff;
-  border: 1px solid rgba(3, 10, 18, 0.04);
+  border: 1px solid var(--border);
   font-weight: 800;
 }
 
 /* drop target visual */
 .day.drop-target {
-  outline: 3px dashed rgba(6, 182, 175, 0.25);
+  outline: 3px dashed var(--accent);
 }
 
 /* right column cards */
@@ -641,8 +677,9 @@ td {
 #yearView {
   display: none;
   margin-top: 12px;
-  max-height: 720px;
-  overflow: auto;
+  /* allow the year view to expand to show all months without internal scrolling */
+  max-height: none;
+  overflow: visible;
   padding-right: 6px;
 }
 
@@ -652,13 +689,29 @@ td {
   gap: 12px;
 }
 
+.year-grid {
+  overflow: visible;
+}
+
 .month-tile {
-  background: var(--card);
+  background: var(--glass);
   border-radius: 8px;
   padding: 8px;
-  border: 1px solid rgba(3, 10, 18, 0.03);
-  box-shadow: 0 6px 18px rgba(3, 10, 18, 0.03);
-  min-height: 120px
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 8px var(--boxshadow);
+  min-height: 120px;
+  position: relative;
+  z-index: 0;
+  overflow: visible;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+  margin: 8px;
+}
+
+.month-tile:hover,
+.month-tile:focus-within {
+  z-index: 5;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
 }
 
 .month-header {
@@ -667,61 +720,85 @@ td {
 }
 
 .month-mini {
+  --mini-size: 16px;
+  /* Grösse der Mini-Days (breite & höhe) */
+  --mini-gap: 6px;
+  /* Abstand zwischen den Mini-Tagen */
+  --weekday-font-scale: 0.6;
+  /* Schriftgrösse in Relation zur mini-size */
   display: flex;
   flex-direction: column;
-  gap: 6px
+  gap: 6px;
 }
 
-.month-mini .mini-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  text-align: center
-}
-
+/* WICHTIG: mini-weekdays und mini-grid nutzen exakt dieselben Spalten */
+.month-mini .mini-weekdays,
 .month-mini .mini-grid {
   display: grid;
-  grid-template-columns: repeat(7, 14px);
-  gap: 4px
+  grid-template-columns: repeat(7, var(--mini-size));
+  gap: var(--mini-gap);
+  justify-content: center;
+  /* zentriert die insgesamt dargestellte Mini-Reihe */
+  align-items: center;
 }
 
-.mini-day {
-  width: 14px;
-  height: 14px;
+/* jede Zelle der Wochentags-Zeile zentriert Inhalt exakt über der Spalte */
+.month-mini .mini-weekdays>div {
+  width: var(--mini-size);
+  height: calc(var(--mini-size) + 2px);
+  /* etwas mehr Höhe für Text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--mini-size) * var(--weekday-font-scale));
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.month-mini .mini-grid>.mini-day {
+  width: var(--mini-size);
+  height: var(--mini-size);
   border-radius: 3px;
-  background: var(--glass);
-  display: inline-block
+  background: var(--card);
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 .mini-day.has-exam {
-  background: rgba(6, 182, 175, 0.85);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06)
+  background: var(--accent) !important;
 }
 
-/* year view */
+.month-tile {
+  background: var(--glass);
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 8px var(--boxshadow);
+  min-height: 120px;
+  position: relative;
+  z-index: 0;
+  overflow: visible;
+  transition: box-shadow 90ms ease, transform 90ms ease;
+  margin: 8px;
+}
+
 #yearView {
-  display: none;
+  display: block;
   margin-top: 12px;
-  max-height: 520px;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
   padding-right: 6px;
 }
 
 .year-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.month-tile {
-  background: var(--card);
-  border-radius: 8px;
-  padding: 8px;
-  border: 1px solid rgba(3, 10, 18, 0.03);
-  box-shadow: 0 6px 18px rgba(3, 10, 18, 0.03);
-  min-height: 92px
+  gap: 12px;
+  overflow: visible;
+  align-items: start;
 }
 
 .heat-row {
@@ -735,7 +812,7 @@ td {
   width: 12px;
   height: 12px;
   border-radius: 2px;
-  background: rgba(6, 182, 175, 0.06)
+  background: var(--glass)
 }
 
 /* Heatmap (separate) */
@@ -758,8 +835,8 @@ td {
   width: 12px;
   height: 12px;
   border-radius: 2px;
-  background: rgba(6, 182, 175, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--boxshadow);
 }
 
 .heat-dot.heat-dot--muted {
@@ -782,7 +859,7 @@ td {
   background: var(--card);
   padding: 14px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+  box-shadow: 0 10px 30px var(--boxshadow);
   z-index: 800;
   min-width: 300px
 }
@@ -804,7 +881,8 @@ td {
   background: none;
   border: 0;
   font-size: 18px;
-  cursor: pointer
+  cursor: pointer;
+  color: var(--fontcolor);
 }
 
 @media (max-width:900px) {
@@ -836,11 +914,160 @@ td {
   color: var(--muted)
 }
 
-select{
+select {
   background-color: var(--card);
-  color: white;
+  color: var(--fontcolor);
   padding: 6px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
 
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--fontcolor)
+}
+
+header,
+h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+
+.settings-container {
+  margin-top: 18px;
+  background: var(--glass);
+  box-shadow: 0 6px 18px var(--boxshadow);
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 44px;
+  height: 34px;
+  padding: 2px;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 10px var(--boxshadow);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* WebKit/Blink: style the internal swatch */
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 8px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 8px;
+  border: 0;
+}
+
+/* Firefox */
+input[type="color"]::-moz-color-swatch {
+  border-radius: 8px;
+  border: 0;
+}
+
+input[type="color"]:focus {
+  outline: none;
+  box-shadow: 0 4px 14px var(--boxshadow);
+}
+
+/* hover subtle lift */
+input[type="color"]:hover {
+  transform: translateY(-1px);
+}
+
+.setting {
+  margin-top: 16px;
+}
+
+.warn-close {
+  color: var(--fontcolor) !important;
+}
+
+/* Settings: improved layout for Sonstiges */
+.setting-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 16px;
+  align-items: center;
+}
+
+.setting-meta .setting-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.setting-desc {
+  font-size: 13px
+}
+
+.setting-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+/* Toggle switch */
+.toggle-switch {
+  display: inline-block;
+  position: relative
+}
+
+.toggle-switch input {
+  display: none
+}
+
+.switch-track {
+  width: 56px;
+  height: 32px;
+  background: var(--card);
+  border-radius: 999px;
+  display: inline-block;
+  box-shadow: inset 0 0 0 1px var(--border);
+  position: relative
+}
+
+.switch-thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--bg);
+  border-radius: 50%;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: all 180ms ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12)
+}
+
+.toggle-switch input:checked+.switch-track {
+  background: var(--accent)
+}
+
+.toggle-switch input:checked+.switch-track .switch-thumb {
+  left: 28px;
+  background: #fff
+}
+
+@media(max-width:720px) {
+  .setting-row {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-control {
+    align-items: flex-start
+  }
 }
